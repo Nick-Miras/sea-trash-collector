@@ -55,54 +55,59 @@ void moveMotorBBackwards() {
   analogWrite(ENABLE_PIN_B, 255);
 }
 
-void stopMotorA() {
+void stopMotorB() {
   digitalWrite(MOTOR_PIN_B_1, LOW);
   digitalWrite(MOTOR_PIN_B_2, LOW);
   analogWrite(ENABLE_PIN_B, 0);
 }
 
 void moveLeft() {
-  moveMotorABackwards()
-  moveMotorBForward()
+  moveMotorABackwards();
+  moveMotorBForward();
 }
 
 void moveRight() {
-  moveMotorBBackwards()
-  moveMotorAForward()
+  moveMotorBBackwards();
+  moveMotorAForward();
 }
 
 void moveForward() {
-  moveMotorAForward()
-  moveMotorBForward()
+  moveMotorAForward();
+  moveMotorBForward();
 }
 
 void moveBackwards() {
-  moveMotorABackwards()
-  moveMotorBBackwards()
+  moveMotorABackwards();
+  moveMotorBBackwards();
+}
+
+void stopMotors() {
+  stopMotorA();
+  stopMotorB();
 }
 
 void loop() {
-  // Forward direction (modify speed value as needed)
-  digitalWrite(MOTOR_PIN_A_1, HIGH);
-  digitalWrite(MOTOR_PIN_A_2, LOW);
-  analogWrite(ENABLE_PIN, 255); // Set motor speed (0-255)
-  delay(2000);                 // Run for 2 seconds
+  if (bluetooth.available()) {
+    char data = bluetooth.read();
 
-  // Stop motor
-  digitalWrite(MOTOR_PIN_A_1, LOW);
-  digitalWrite(MOTOR_PIN_A_2, LOW);
-  analogWrite(ENABLE_PIN, 0);   // Disable motor
-  delay(1000);                 // Wait for 1 second
-
-  // Backward direction (modify speed value as needed)
-  digitalWrite(MOTOR_PIN_A_1, LOW);
-  digitalWrite(MOTOR_PIN_A_2, HIGH);
-  analogWrite(ENABLE_PIN, 255); // Set motor speed (0-255)
-  delay(2000);                 // Run for 2 seconds
-
-  // Stop motor
-  digitalWrite(MOTOR_PIN_A_1, LOW);
-  digitalWrite(MOTOR_PIN_A_2, LOW);
-  analogWrite(ENABLE_PIN, 0);   // Disable motor
-  delay(1000);                 // Wait for 1 second
+    switch (data) {
+      case 'F':
+        moveForward();
+        break;
+      case 'B':
+        moveBackwards();
+        break;
+      case 'S':
+        stopMotors();
+        break;
+      case 'L':
+        moveLeft();
+        break;
+      case 'R':
+        moveRight();
+        break;
+      default:
+        break;
+    }
+  }
 }
